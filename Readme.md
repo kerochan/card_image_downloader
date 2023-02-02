@@ -2,6 +2,7 @@
 ## 事前準備
 * pythonのインストール
 最新版のpythonをインストールしてください。pythonには大きく分けてver2とver3がありますが、ver3の方をインストールしてください。詳しいインストール方法は各自調べてください。
+インストール後、コマンドプロンプト(Windows)またはターミナル(MacOS)を開き、pip install requests または　python -m pip install requestsを実行してください。
 
 ## 使い方
 1. コマンドプロンプト(Windows)またはターミナル(MacOS)を開き、card_image_downloader.pyが置かれているフォルダ(移動していなければこのファイルと同じ場所にあります)に移動します。
