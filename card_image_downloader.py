@@ -1,15 +1,11 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-from requests import Session, Response
+from requests import Session
 from sys import argv
 from typing import Optional
 import re
 
-
-
-
-        
 class DownloadCardImage:
     __url: str = "https://scptcgjpj.fandom.com/ja/api.php"
     __session = Session()
@@ -56,24 +52,26 @@ class DownloadCardImage:
             print("[Error] Not Found Images in This Page.")
             return False
         
-        imageFileName: str = list(resPages.values())[0]["images"][0]["title"]
-        
-        REQUEST_IMAGE_DIR = {"action" : "query", "titles" : imageFileName, "prop": "imageinfo", "iiprop": "url", "format": "json"}
-        res = DownloadCardImage.__session.get(url = "https://scptcgjpj.fandom.com/ja/api.php", params=REQUEST_IMAGE_DIR, verify=True)
-        imageURL: str = list(res.json()["query"]["pages"].values())[0]["imageinfo"][0]["url"]
-
-        originalFileName: str = imageFileName.replace("ファイル:", "")
-        imageExt = re.search("\.[^\.]+$", originalFileName)
-        if imageExt == None:
-            print("[Assert] No Imagefile extention!")
-            assert(False)
-
-        ext: str = imageExt.group()        
-        outFileName: str = originalFileName if outputDirPath == None else outputDirPath + "/" +  originalFileName
+        images: list = list(resPages.values())[0]["images"]
+        for image in images:
+            imageFileName = image["title"]
             
-        imageContent: bytes = DownloadCardImage.__session.get(url = imageURL, verify=True).content
-        with open(outFileName, "wb") as f:
-            f.write(imageContent)
+            REQUEST_IMAGE_DIR = {"action" : "query", "titles" : imageFileName, "prop": "imageinfo", "iiprop": "url", "format": "json"}
+            res = DownloadCardImage.__session.get(url = "https://scptcgjpj.fandom.com/ja/api.php", params=REQUEST_IMAGE_DIR, verify=True)
+
+            imageURL: str = list(res.json()["query"]["pages"].values())[0]["imageinfo"][0]["url"]
+            originalFileName: str = imageFileName.replace("ファイル:", "")
+            imageExt = re.search("\.[^\.]+$", originalFileName)
+            if imageExt == None:
+                print("[Assert] No Imagefile extention!")
+                assert(False)
+
+            ext: str = imageExt.group()        
+            outFileName: str = originalFileName if outputDirPath == None else outputDirPath + "/" +  originalFileName
+                
+            imageContent: bytes = DownloadCardImage.__session.get(url = imageURL, verify=True).content
+            with open(outFileName, "wb") as f:
+                f.write(imageContent)
         
         print("[Info] Downloaded Card Image.")
         return True
